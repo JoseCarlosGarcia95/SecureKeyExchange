@@ -45,6 +45,12 @@ public class DiffieHellman {
         }
     }
 
+    /**
+     * Initialize Diffie Hellman with pre-compute values.
+     * @param prime
+     * @param generator
+     * @throws LowSecurityLevel
+     */
     public void Init(BigInteger prime, BigInteger generator) throws LowSecurityLevel {
         if (this.securityLevel == DHSecurityLevel.Extreme && (!NumberTheory.TestGeneratorIntegrity(generator, prime) || prime.bitLength() < 512))
             throw new LowSecurityLevel("Diffie Hellman keys aren't secures");
@@ -58,6 +64,11 @@ public class DiffieHellman {
         this.publicKey = this.generator.modPow(this.privateKey, this.prime);
     }
 
+    /**
+     * Generate a sharedKey from other part public key.
+     * @param publicKey
+     * @throws LowSecurityLevel
+     */
     public void GenerateSharedKey(BigInteger publicKey) throws LowSecurityLevel {
 
         if (publicKey.equals(BigInteger.ONE) || publicKey.equals(BigInteger.ZERO) || publicKey.mod(prime).equals(BigInteger.ZERO))
@@ -68,6 +79,11 @@ public class DiffieHellman {
         this.publicKey = this.prime = this.generator = this.privateKey = null;
     }
 
+    /**
+     * Generate a md5 hash to check sharedKey integrity.
+     * @return
+     * @throws Exception
+     */
     public BigInteger getSharedKeyHash() throws Exception {
         byte[] sharedKeyBytes = this.sharedKey.toByteArray();
 
@@ -79,11 +95,27 @@ public class DiffieHellman {
         return new BigInteger(hashed).abs();
     }
 
+    /**
+     * Get the sharedKey.
+     * @return
+     */
     public BigInteger getSharedKey() {
         return this.sharedKey;
     }
 
+    /**
+     * Get the public key.
+     * @return
+     */
     public BigInteger getPublicKey() {
         return this.publicKey;
+    }
+
+    public BigInteger getPrime() {
+        return this.prime;
+    }
+
+    public BigInteger getGenerator() {
+        return this.generator;
     }
 }

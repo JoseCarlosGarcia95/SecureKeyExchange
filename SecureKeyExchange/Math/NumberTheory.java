@@ -4,6 +4,7 @@ import SecureKeyExchange.Exceptions.LowSecurityLevel;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 /**
  * Created by Jose on 15/08/2015.
@@ -99,7 +100,59 @@ public class NumberTheory {
         return x;
     }
 
+    /**
+     * Generate a random BigInteger
+     *
+     * @param bitLength
+     * @return
+     */
     public static BigInteger GenerateRandom(int bitLength) {
         return new BigInteger(bitLength, sr);
+    }
+
+    /**
+     * Factorice a number "n" with Pollard's rho function.
+     *
+     * @param n
+     * @return
+     */
+    public static ArrayList<BigInteger> factorize(BigInteger n) {
+        ArrayList<BigInteger> factors = new ArrayList<BigInteger>();
+
+        BigInteger divisor;
+        do {
+            divisor = rho(n);
+            factors.add(divisor);
+            n = n.divide(divisor);
+        } while (n.equals(BigInteger.ONE));
+
+        return factors;
+    }
+
+    /**
+     * Pollard's rho function.
+     *
+     * @param n
+     * @return
+     */
+    public static BigInteger rho(BigInteger n) {
+        if (n.isProbablePrime(10)) return n;
+        BigInteger divisor;
+        BigInteger c = new BigInteger(n.bitLength(), sr);
+        BigInteger x = new BigInteger(n.bitLength(), sr);
+        BigInteger xx = x;
+
+        // check divisibility by 2
+        if (n.mod(two).compareTo(BigInteger.ZERO) == 0) return two;
+
+        do {
+            x = x.multiply(x).add(c).mod(n);
+            xx = xx.multiply(xx).add(c).mod(n);
+            xx = xx.multiply(xx).add(c).mod(n);
+            divisor = x.subtract(xx).gcd(n);
+        } while ((divisor.compareTo(BigInteger.ONE)) == 0);
+
+        return divisor;
+
     }
 }
