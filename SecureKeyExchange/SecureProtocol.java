@@ -16,7 +16,7 @@ public class SecureProtocol {
     private RSAKey rsaKey;
 
     /**
-     * Start RSAKey and Diffie Hellman class, will be useful!
+     * Start RSAKey and Diffie Hellman class, will be useful! 
      */
     public SecureProtocol() {
         this.diffieHellman = new DiffieHellman(DHSecurityLevel.High);
